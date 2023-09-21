@@ -2,6 +2,6 @@
   import "../app.css";
 </script>
 
-<div>
+<div class="bg-[#fdfefd]">
   <slot />
 </div>
