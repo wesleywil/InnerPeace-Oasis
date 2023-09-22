@@ -36,20 +36,23 @@ const initStore = () => {
         }))
     },
     startTimer:()=>{
-        update((state)=>{
-          if(state.timerSet === 0){
-            const intervalId = setInterval(()=>{
-              if(state.count > 0){
-                update((s)=>({...s, count:s.count - 1}));
-              }else{
+      update((state) => {
+        if (state.timerSet === 0 && state.count > 0) {
+          const intervalId = setInterval(() => {
+            update((s) => {
+              if (s.count > 0 && s.toggle) {
+                return { ...s, count: s.count - 1 };
+              } else {
                 clearInterval(intervalId);
-                return {...state, timerSet:0, toggle:false};
+                return { ...s, timerSet: 0, toggle: false };
               }
-            },1000);
-            return {...state, timerSet:intervalId, toggle:true};
-          }
-          return state
-        })
+            });
+          }, 1000);
+    
+          return { ...state, timerSet: intervalId, toggle: true };
+        }
+        return state;
+      });
     },
     stopTimer:()=>{
         update((state)=>{
