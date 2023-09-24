@@ -38,15 +38,19 @@
   @keyframes breathing {
     0% {
       -webkit-transform: scale(1);
+      background: radial-gradient(closest-side, #95ffb2, #24bb49);
     }
     25% {
       -webkit-transform: scale(0.9);
+      background: radial-gradient(closest-side, #95ffb2, #24bb49);
     }
     60% {
       -webkit-transform: scale(1);
+      background: radial-gradient(closest-side, #95ffb2, #24bb49);
     }
     100% {
       -webkit-transform: scale(0.9);
+      background: radial-gradient(closest-side, #95ffb2, #24bb49);
     }
   }
 
