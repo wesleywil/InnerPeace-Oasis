@@ -53,17 +53,17 @@
 
   <button
     on:click={play}
-    class="md:mt-4 px-2 py-1 text-[#fdfefd] text-3xl md:text-5xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded-xl transform duration-700 ease-in-out"
+    class="md:mt-4 px-2 py-1 text-[#fdfefd] text-xl md:text-2xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded transform duration-700 ease-in-out"
     >Start</button
   >
   <button
     on:click={stop}
-    class="md:mt-4 px-2 py-1 text-[#fdfefd] text-3xl md:text-5xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded-xl transform duration-700 ease-in-out"
+    class="md:mt-4 px-2 py-1 text-[#fdfefd] text-xl md:text-2xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded transform duration-700 ease-in-out"
     >Stop</button
   >
   <button
     on:click={reset}
-    class="md:mt-4 px-2 py-1 text-[#fdfefd] text-3xl md:text-5xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded-xl transform duration-700 ease-in-out"
+    class="md:mt-4 px-2 py-1 text-[#fdfefd] text-xl md:text-2xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded transform duration-700 ease-in-out"
     >Reset</button
   >
 </div>
