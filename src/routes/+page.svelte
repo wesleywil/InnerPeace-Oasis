@@ -11,8 +11,9 @@
     Find Tranquility, Relaxation, and Balance in the Digital Sanctuary of
     InnerPeace Oasis
   </h2>
-  <button
+  <a
+    href="/meditate"
     class="md:mt-4 px-2 py-1 text-[#fdfefd] text-3xl md:text-5xl bg-[#24bb49] hover:bg-[#07681f] font-semibold rounded-xl transform duration-700 ease-in-out"
-    >Meditate</button
+    >Meditate</a
   >
 </main>
