@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 
 export interface Timer {
   count: number;
+  initialCounter:number;
   toggle:boolean;
   timerSet:number;
 }
@@ -9,6 +10,7 @@ export interface Timer {
 const initStore = () => {
   const initialTimer: Timer = {
     count: 0,
+    initialCounter:0,
     toggle:false,
     timerSet:0
   };
@@ -21,6 +23,7 @@ const initStore = () => {
       update((state) => ({
         ...state,
         count: count *60,
+        initialCounter: count
       }));
     },
     setTimer:(timer:number)=>{
