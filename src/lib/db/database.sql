@@ -8,8 +8,7 @@ CREATE TABLE users(
 CREATE TABLE meditation_sessions(
     id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT NOT NULL,
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
+    end_time DATE NOT NULL,
     duration INT NOT NULL,
     notes TEXT,
     FOREIGN KEY (userId) REFERENCES users(id)
