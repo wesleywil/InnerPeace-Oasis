@@ -7,6 +7,30 @@
   import Timer from "$lib/components/timer/Timer.svelte";
   import TimerActions from "$lib/components/timer_actions/TimerActions.svelte";
   import TimerOptions from "$lib/components/timer_options/TimerOptions.svelte";
+
+  async function handleMeditationCompletion() {
+    const currentDate = new Date();
+    const mysqlDate = currentDate.toISOString().split("T")[0];
+    const req = await fetch("http://localhost:5173/api/meditation", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: data.data?.id,
+        end_time: mysqlDate,
+        duration: $timer.initialCounter,
+        notes: "testing...",
+      }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    console.log("result=> ", req);
+  }
+
+  $: {
+    if ($timerCompleted) {
+      handleMeditationCompletion();
+    }
+  }
 </script>
 
 <main
