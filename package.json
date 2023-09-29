@@ -23,6 +23,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"mysql2": "^3.6.1"
+		"mysql2": "^3.6.1",
+		"svelte-icons": "^2.1.0"
 	}
 }
