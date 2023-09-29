@@ -47,6 +47,6 @@
   {#if changeOptions}
     <PercentageYear data={meditateData} />
   {:else}
-    <PercentageMonths />
+    <PercentageMonths data={meditateData} />
   {/if}
 </main>
