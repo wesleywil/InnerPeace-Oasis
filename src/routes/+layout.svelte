@@ -1,8 +1,10 @@
 <script>
+  import Menu from "$lib/components/menu/Menu.svelte";
   import "../app.css";
 </script>
 
 <div class="bg-[#fdfefd] pattern6">
+  <Menu />
   <slot />
 </div>
 
