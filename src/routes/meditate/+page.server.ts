@@ -1,14 +1,14 @@
 import { mysqlconnFn } from "$lib/db/mysql";
 
 interface UserData{
-    username:string;
+    name:string;
     id:number
 }
 
 export async function load():Promise<{data:UserData | null} | Error>{
    try{
     const mysqlconn = await mysqlconnFn();
-    const [rows, _] = await mysqlconn.query("SELECT username, id FROM innerpease_oasis.users LIMIT 1;");
+    const [rows, _] = await mysqlconn.query("SELECT name, id FROM innerpease_oasis.user LIMIT 1;");
     if(rows.length === 0){
         return {
             data:null,

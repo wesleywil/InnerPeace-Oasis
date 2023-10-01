@@ -40,7 +40,7 @@
     class="w-full md:w-2/3 xl:w-1/3 my-2 p-1 flex flex-col justify-center items-center text-[#fdfefd] bg-[#292929]/70 rounded"
   >
     <h1 class="text-2xl font-bold">Username</h1>
-    <h1 class=" text-xl font-semibold">{data.data?.username}</h1>
+    <h1 class=" text-xl font-semibold">{data.data?.name}</h1>
   </div>
 
   <!-- {#if $timer.timerSet !== 0}
