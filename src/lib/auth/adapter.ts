@@ -4,16 +4,20 @@ import type {
   AdapterUser,
   VerificationToken,
 } from "@auth/core/adapters";
-import { mysqlconnFn } from "$lib/db/mysql";
+
 import type { Connection } from "mysql2/promise";
 
-export function mapExpiresAt(account: any): any {
-  const expires_at: number = parseInt(account.expires_at);
-  return {
-    ...account,
-    expires_at,
-  };
+function convertToMySQLDatetime(date: Date):string{
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
 
 export default function MysqlAdapter(client: Connection): Adapter {
   return {
@@ -33,20 +37,23 @@ export default function MysqlAdapter(client: Connection): Adapter {
       token: string;
     }): Promise<VerificationToken> {
       const sql = `DELETE FROM innerpease_oasis.verificationtoken WHERE identifier = "${identifier}" and token = "${token}";`;
-      const result = await client.query(sql);
-      return result.rowCount !== 0 ? result.rows[0] : null;
+      const [rows, _] = await client.query(sql);
+      if(rows.length === 0){
+        return {} as VerificationToken
+      }
+      return rows[0];
     },
     async createUser(user: Omit<AdapterUser, "id">) {
       const { name, email, emailVerified, image } = user;
-      // const sql = `
-      //         INSERT INTO innerpease_oasis.user (name, email, emailVerified, image) 
-      //         VALUES ("${name}", "${email}", "${emailVerified}", "${image}");`;
       const sql = `INSERT INTO innerpease_oasis.user (name, email, emailVerified, image) VALUES(?,?,?,?)ON DUPLICATE KEY UPDATE name = VALUES(name), emailVerified = VALUES(emailVerified), image = VALUES(image)`;
       const values = [name, email, emailVerified, image];
       try{
         await client.query(sql, values);
-        const [UserData] = await client.query('SELECT * FROM innerpease_oasis.user WHERE email = ?', [email])
-        return UserData;
+        const [rows, _] = await client.query('SELECT * FROM innerpease_oasis.user WHERE email = ?', [email])
+        if(rows.length === 0){
+          return null
+        }
+        return rows[0];
 
       }catch(error){
         console.error("Got an error");
@@ -58,21 +65,25 @@ export default function MysqlAdapter(client: Connection): Adapter {
     async getUser(id) {
       const sql = `select * from innerpease_oasis.user where id = ${id};`;
       try {
-        const result = await client.query(sql);
-        return result.rowCount === 0 ? null : result.rows[0];
+        const [rows, _] = await client.query(sql);
+        if(rows.length === 0){
+          return null;
+        }
+        return rows[0]
       } catch (e) {
         return null;
       }
     },
     async getUserByEmail(email) {
-      const sql = `select * from innerpease_oasis.user where email = "${email}";`;
-      console.log('EMAIL SQL=> ', sql)
-      const result = await client.query(sql);
-      if(result.rows && result.rows.length >0){
-        return result.rows[0]
-      }else{
+      const sql = `SELECT * FROM innerpease_oasis.user WHERE email = "${email}";`;
+      
+      const [rows, _] = await client.query(sql);
+      if(rows.length === 0){
+       
         return null;
       }
+      
+      return rows[0];
     },
     async getUserByAccount({
       providerAccountId,
@@ -85,12 +96,11 @@ export default function MysqlAdapter(client: Connection): Adapter {
         a.provider = "${provider}" 
         and 
         a.providerAccountId = "${providerAccountId}";`;
-        const result = await client.query(sql);
-        if(result.rows && result.rows.length > 0){
-          return result.rows[0]
-        }else{
-          return null;
+        const[rows, _] = await client.query(sql);
+        if(rows.length === 0){
+          return null
         }
+        return rows[0]
        
       } catch (error) {
         console.error("Got an error");
@@ -100,9 +110,11 @@ export default function MysqlAdapter(client: Connection): Adapter {
     },
     async updateUser(user: Partial<AdapterUser>): Promise<AdapterUser> {
       const fetchSql = `select * from innerpease_oasis.user where id = ${user.id};`;
-      const query1 = await client.query(fetchSql);
-      const oldUser = query1.rows[0];
-
+      const [rows, _] = await client.query(fetchSql);
+      if(rows.length === 0){
+        return {} as AdapterUser
+      }
+      const oldUser = rows[0];
       const newUser = {
         ...oldUser,
         ...user,
@@ -113,8 +125,9 @@ export default function MysqlAdapter(client: Connection): Adapter {
               UPDATE innerpease_oasis.user set
               name = "${name}", email = "${email}", emailVerified = "${emailVerified}", image = "${image}"
               where id = ${id};`;
-      const query2 = await client.query(updateSql);
-      return query2.rows[0];
+      await client.query(updateSql);
+      const [rows2, _2] = await client.query('SELECT * FROM innerpease_oasis.user WHERE email = ?', [email]) 
+      return rows2[0];
     },
     async linkAccount(account) {
       const sql = `
@@ -133,19 +146,22 @@ export default function MysqlAdapter(client: Connection): Adapter {
               token_type
             )
             values (${account.userId}, "${account.provider}", "${account.type}", "${account.providerAccountId}", "${account.access_token}", ${account.expires_at}, "${account.refresh_token}", "${account.id_token}", "${account.scope}", "${account.session_state}", "${account.token_type}");`;
-              console.log('LINK ACCOUNT QUERY => ', sql);
-            const result = await client.query(sql);
-      return mapExpiresAt(result.rows[0]);
+            
+            await client.query(sql);
+            const [rows, _] = await client.query('SELECT * FROM innerpease_oasis.account WHERE userId = ?', [account.userId]);
+            
+      return rows[0];
     },
     async createSession({ sessionToken, userId, expires }) {
       if (userId === undefined) {
         throw Error(`userId is undef in createSession`);
       }
+      const expiresDate = convertToMySQLDatetime(expires);
       const sql = `insert into innerpease_oasis.session (userId, expires, sessionToken)
-            values (${userId}, "${expires}", "${sessionToken}");`;
-
-      const result = await client.query(sql);
-      return result.rows[0];
+            values (${userId}, "${expiresDate}", "${sessionToken}");`;
+      await client.query(sql);
+      const [rows, _] = await client.query(`SELECT * FROM innerpease_oasis.session WHERE userId = ${userId}`);
+      return rows[0];
     },
 
     async getSessionAndUser(sessionToken: string | undefined): Promise<{
@@ -155,21 +171,21 @@ export default function MysqlAdapter(client: Connection): Adapter {
       if (sessionToken === undefined) {
         return null;
       }
-      const result1 = await client.query(
+      const [result1, _] = await client.query(
         `select * from innerpease_oasis.session where sessionToken = "${sessionToken}";`
       );
-      if (result1.rowCount === 0) {
+      if (result1 === 0) {
         return null;
       }
-      let session: AdapterSession = result1.rows[0];
+      let session: AdapterSession = result1[0];
 
-      const result2 = await client.query(
+      const [result2, _2] = await client.query(
         `select * from innerpease_oasis.user where id = ${session.userId};`
       );
-      if (result2.rowCount === 0) {
+      if (result2 === 0) {
         return null;
       }
-      const user = result2.rows[0];
+      const user = result2[0];
       return {
         session,
         user,
@@ -179,13 +195,13 @@ export default function MysqlAdapter(client: Connection): Adapter {
       session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">
     ): Promise<AdapterSession | null | undefined> {
       const { sessionToken } = session;
-      const result1 = await client.query(
+      const [result1, _] = await client.query(
         `select * from innerpease_oasis.session where sessionToken = "${sessionToken}";`
       );
-      if (result1.rowCount === 0) {
+      if (result1 === 0) {
         return null;
       }
-      const originalSession: AdapterSession = result1.rows[0];
+      const originalSession: AdapterSession = result1[0];
 
       const newSession: AdapterSession = {
         ...originalSession,
@@ -195,8 +211,9 @@ export default function MysqlAdapter(client: Connection): Adapter {
               UPDATE innerpease_oasis.session set
               expires = "${newSession.expires}"
               where sessionToken = "${newSession.sessionToken}";`;
-      const result = await client.query(sql);
-      return result.rows[0];
+      await client.query(sql);
+      const [result, _2] = await client.query('SELECT*FROM innerpease_oasis.session WHERE sessionToken = "$"', [newSession.sessionToken])
+      return result[0];
     },
     async deleteSession(sessionToken) {
       const sql = `delete from innerpease_oasis.session where sessionToken = ${sessionToken};`;
