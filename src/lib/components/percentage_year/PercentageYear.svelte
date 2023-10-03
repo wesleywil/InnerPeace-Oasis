@@ -11,6 +11,11 @@
 
 <div class="w-full md:w-2/3 xl:w-1/3 h-96 p-2 overflow-y-auto">
   {#if data !== undefined && data !== null}
+    {#if data.length === 0}
+      <p class="my-4 font-bold text-2xl font-semibold text-[#fdfefd]">
+        No meditations were registered
+      </p>
+    {/if}
     {#each data as dataSession (dataSession.userId)}
       <div
         class="flex bg-black rounded text-white md:text-2xl rounded border overflow-hidden"
@@ -30,6 +35,8 @@
       </div>
     {/each}
   {:else}
-    <p>No data available</p>
+    <p class="my-4 font-bold text-2xl font-semibold text-[#fdfefd]">
+      No meditations were registered
+    </p>
   {/if}
 </div>
