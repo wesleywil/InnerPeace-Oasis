@@ -1,6 +1,6 @@
 <script lang="ts">
   export let data;
-
+  import { page } from "$app/stores";
   import { timer } from "../../store/timer";
   import { timerCompleted } from "../../store/meditation";
 
@@ -14,7 +14,7 @@
     const req = await fetch("http://localhost:5173/api/meditation", {
       method: "POST",
       body: JSON.stringify({
-        userId: data.data?.id,
+        userId: $page.data.session?.user?.id,
         end_time: mysqlDate,
         duration: $timer.initialCounter,
         notes: "testing...",
@@ -42,15 +42,6 @@
     <h1 class="text-2xl font-bold">Username</h1>
     <h1 class=" text-xl font-semibold">{data.data?.name}</h1>
   </div>
-
-  <!-- {#if $timer.timerSet !== 0}
-    <p>Timer: {$timer.count} seconds</p>
-    <p>Timer is running</p>
-    {#if $timerCompleted}
-      <p>Meditation completed naturally!</p>
-      <p>Do something here...</p>
-    {/if}
-  {/if} -->
   <TimerOptions />
   <Timer />
   <TimerActions />
