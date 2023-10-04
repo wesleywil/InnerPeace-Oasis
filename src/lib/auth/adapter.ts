@@ -207,9 +207,10 @@ export default function MysqlAdapter(client: Connection): Adapter {
         ...originalSession,
         ...session,
       };
+      const expiresDate = convertToMySQLDatetime(newSession.expires)
       const sql = `
               UPDATE innerpease_oasis.session set
-              expires = "${newSession.expires}"
+              expires = "${expiresDate}"
               where sessionToken = "${newSession.sessionToken}";`;
       await client.query(sql);
       const [result, _2] = await client.query('SELECT*FROM innerpease_oasis.session WHERE sessionToken = "$"', [newSession.sessionToken])
