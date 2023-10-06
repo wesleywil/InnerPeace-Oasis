@@ -45,7 +45,7 @@
         <h2 class="md:text-xl">{$page.data.session.user?.name}</h2>
         <button
           on:click={() => signOut()}
-          class="md:w-24 mx-auto px-2 md:px-0 py-1 font-bold bg-[#24bb49] rounded"
+          class="md:w-24 mx-auto px-2 md:px-0 py-1 font-bold bg-[#24bb49] hover:bg-[#07681f] rounded transform duration-700 ease-in-out"
           >Sign Out</button
         >
       </div>
@@ -57,12 +57,12 @@
     <div class="flex gap-2 justify-center">
       <button
         on:click={() => switchOptions(true)}
-        class="px-2 py-1 text-xl font-bold bg-[#fdfefd] text-[#292929] rounded"
+        class="px-2 py-1 text-xl font-bold bg-[#fdfefd] hover:bg-[#24bb49] text-[#292929] hover:text-[#fdfefd] rounded transform duration-500 ease-in-out"
         >Years</button
       >
       <button
         on:click={() => switchOptions(false)}
-        class="px-2 py-1 text-xl font-bold bg-[#fdfefd] text-[#292929] rounded"
+        class="px-2 py-1 text-xl font-bold bg-[#fdfefd] hover:bg-[#24bb49] text-[#292929] hover:text-[#fdfefd] rounded transform duration-500 ease-in-out"
         >Months</button
       >
     </div>
