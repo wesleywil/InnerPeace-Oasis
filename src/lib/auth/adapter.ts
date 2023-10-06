@@ -217,7 +217,7 @@ export default function MysqlAdapter(client: Connection): Adapter {
       return result[0];
     },
     async deleteSession(sessionToken) {
-      const sql = `delete from innerpease_oasis.session where sessionToken = ${sessionToken};`;
+      const sql = `delete from innerpease_oasis.session where sessionToken = "${sessionToken}";`;
       await client.query(sql);
     },
     async unlinkAccount(partialAccount) {
