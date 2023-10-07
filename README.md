@@ -1,38 +1,68 @@
-# create-svelte
+# InnerPeace Oasis - Meditation Web App
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A project that allows users to meditate and track their meditation sessions
 
-## Creating a project
+## Tech Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+**Language:** Typescript, SQL
+
+**Backend:** MySQL, AuthJS, SvelteKit
+
+**FrontEnd:** SvelteKit, Tailwindcss, Svelte-Icons
+
+## Screenshots
+
+### Home
+
+![Homepage](https://i.imgur.com/H0Ka5Wz.png)
+
+### Meditate
+
+![Meditate](https://i.imgur.com/wAyrl0T.png)
+
+### Dashboard\*
+
+![Dashboard](https://i.imgur.com/6mdzRye.png)
+
+### Demo
+
+![DEMO](https://i.imgur.com/tyvtiAw.gif)
+
+## Run Locally
+
+### Clone the project
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+  git clone https://github.com/wesleywil/InnerPeace-Oasis
 ```
 
-## Developing
+### Setup .env
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```
+MYSQL_HOST =<your_mysql_host>
+MYSQL_PORT = <your_mysql_port>
+MYSQL_USERNAME =<your_mysql_username>
+MYSQL_PASSWORD=<your_mysql_password>
+MYSQL_DATABASE=<your_mysql_database>
+
+AUTH_SECRET=<your_auth_secret>
+
+GOOGLE_ID=<your_google_project_id>
+GOOGLE_SECRET=<your_google_project_secret>
+```
+
+### Installing dependencies
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+  npm install
 ```
 
-## Building
-
-To create a production version of your app:
+### Running the Application
 
 ```bash
-npm run build
+  npm run dev
 ```
 
-You can preview the production build with `npm run preview`.
+## Authors
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- [Wesley Wilson](https://github.com/wesleywil)
